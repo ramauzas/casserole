@@ -48,6 +48,7 @@ function animateBaton(event) {
 }
 
 function playSound() {
+  // Vérifier si le son est en cours de lecture
   if (isPlaying) {
     return;
   }
@@ -63,10 +64,20 @@ function playSound() {
 
     // Lancer la lecture du son
     source.start();
+
+    // Réinitialiser la variable isPlaying après la fin de la lecture du son
+    source.onended = function() {
+      isPlaying = false;
+    };
   } else {
     // Utiliser la méthode Audio() traditionnelle
     const audio = new Audio("casserole-sound.wav");
     audio.play();
+
+    // Réinitialiser la variable isPlaying après la fin de la lecture du son
+    audio.onended = function() {
+      isPlaying = false;
+    };
   }
 
   isPlaying = true;
