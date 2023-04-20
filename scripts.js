@@ -52,15 +52,22 @@ function playSound() {
     return;
   }
 
-  // Créer un nouveau nœud source audio
-  const source = audioCtx.createBufferSource();
-  source.buffer = buffer;
+  // Vérifier si l'API Web Audio est prise en charge
+  if (audioCtx) {
+    // Créer un nouveau nœud source audio
+    const source = audioCtx.createBufferSource();
+    source.buffer = buffer;
 
-  // Connecter le nœud source à la destination de sortie audio
-  source.connect(audioCtx.destination);
+    // Connecter le nœud source à la destination de sortie audio
+    source.connect(audioCtx.destination);
 
-  // Lancer la lecture du son
-  source.start();
+    // Lancer la lecture du son
+    source.start();
+  } else {
+    // Utiliser la méthode Audio() traditionnelle
+    const audio = new Audio("casserole-sound.wav");
+    audio.play();
+  }
 
   isPlaying = true;
 }
@@ -73,7 +80,7 @@ casseroleButton.addEventListener("click", animateBaton);
 
 // Déverrouiller l'AudioContext sur la première interaction de l'utilisateur
 function unlockAudioContext() {
-  if (audioCtx.state === "suspended") {
+  if (audioCtx && audioCtx.state === "suspended") {
     audioCtx.resume();
   }
 
@@ -87,3 +94,4 @@ document.body.addEventListener("touchend", unlockAudioContext);
 
 // Initialiser le contexte audio
 init();
+
