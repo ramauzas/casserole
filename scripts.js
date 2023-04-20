@@ -5,7 +5,23 @@ const baton = document.getElementById("baton");
 // Charger le son de la casserole
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-// ... Le reste du code de chargement audio et d'initialisation reste inchangé ...
+let audioBuffer;
+
+async function fetchAudioFile() {
+  try {
+    const response = await fetch("casserole-sound.wav");
+    const buffer = await response.arrayBuffer();
+    const decodedData = await audioContext.decodeAudioData(buffer);
+    return decodedData;
+  } catch (error) {
+    console.error("Erreur lors du chargement du fichier audio :", error);
+    return null;
+  }
+}
+
+async function init() {
+  audioBuffer = await fetchAudioFile();
+}
 
 function animateBaton(event) {
   const rect = casseroleButton.getBoundingClientRect();
@@ -25,7 +41,17 @@ function playSound(event) {
   event.preventDefault();
   animateBaton(event);
 
-  // ... Le reste du code pour arrêter la source précédente et démarrer le son reste inchangé ...
+  // Arrête la source précédente, si elle est en cours de lecture
+  if (source) {
+    source.stop(0);
+    source.disconnect();
+    gainNode.disconnect();
+  }
+
+  // Crée une nouvelle source et démarre le son
+  createSource();
+  gainNode.gain.value = 1;
+  source.start(0);
 }
 
 // Gestion des événements tactiles
@@ -34,8 +60,6 @@ casseroleButton.addEventListener("touchend", playSound);
 // Gestion des événements de la souris
 casseroleButton.addEventListener("click", playSound);
 
-// Initialisation
-init();
 // Déverrouiller l'AudioContext sur la première interaction de l'utilisateur
 function unlockAudioContext() {
   if (audioContext.state === "suspended") {
@@ -50,3 +74,6 @@ function unlockAudioContext() {
 // Ajouter des écouteurs d'événements pour détecter la première interaction de l'utilisateur
 document.body.addEventListener("click", unlockAudioContext);
 document.body.addEventListener("touchend", unlockAudioContext);
+
+// Initialisation
+init();
