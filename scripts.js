@@ -40,15 +40,24 @@ function createSource() {
 
 let isPlaying = false;
 
+
 function startSound(event) {
   event.preventDefault();
-  if (!isPlaying) {
-    createSource();
-    gainNode.gain.value = 1;
-    source.start(0);
-    isPlaying = true;
+
+  // Arrête et déconnecte la source et le gainNode précédents (Modifications à apporter)
+  if (isPlaying) {
+    source.stop(0);
+    source.disconnect();
+    gainNode.disconnect();
   }
+
+  // Crée une nouvelle source et démarre le son (Modifications à apporter)
+  createSource();
+  gainNode.gain.value = 1;
+  source.start(0);
+  isPlaying = true;
 }
+
 
 function stopSound(event) {
   event.preventDefault();
