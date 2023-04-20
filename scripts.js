@@ -1,9 +1,29 @@
 const container = document.getElementById("container");
 const casseroleButton = document.getElementById("casseroleButton");
 const baton = document.getElementById("baton");
-const audio = new Audio("casserole-sound.wav");
 
+let audioCtx;
+let buffer;
 let isPlaying = false;
+
+function init() {
+  // Créer un nouveau contexte audio
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  // Charger le fichier audio
+  fetchAudioFile("casserole-sound.wav")
+    .then(arrayBuffer => {
+      // Décode l'audio
+      return audioCtx.decodeAudioData(arrayBuffer);
+    })
+    .then(decodedData => {
+      // Stocker les données audio décodées dans le buffer
+      buffer = decodedData;
+    })
+    .catch(error => {
+      console.error("Une erreur s'est produite lors du chargement du fichier audio :", error);
+    });
+}
 
 function animateBaton(event) {
   const rect = casseroleButton.getBoundingClientRect();
@@ -29,12 +49,19 @@ function animateBaton(event) {
 
 function playSound() {
   if (isPlaying) {
-    audio.pause();
-    audio.currentTime = 0;
-    isPlaying = false;
+    return;
   }
 
-  audio.play();
+  // Créer un nouveau nœud source audio
+  const source = audioCtx.createBufferSource();
+  source.buffer = buffer;
+
+  // Connecter le nœud source à la destination de sortie audio
+  source.connect(audioCtx.destination);
+
+  // Lancer la lecture du son
+  source.start();
+
   isPlaying = true;
 }
 
@@ -46,14 +73,17 @@ casseroleButton.addEventListener("click", animateBaton);
 
 // Déverrouiller l'AudioContext sur la première interaction de l'utilisateur
 function unlockAudioContext() {
-  if (audio.paused) {
-    audio.play();
-    audio.pause();
-    document.body.removeEventListener("click", unlockAudioContext);
-    document.body.removeEventListener("touchend", unlockAudioContext);
+  if (audioCtx.state === "suspended") {
+    audioCtx.resume();
   }
+
+  document.body.removeEventListener("click", unlockAudioContext);
+  document.body.removeEventListener("touchend", unlockAudioContext);
 }
 
 // Ajouter des écouteurs d'événements pour détecter la première interaction de l'utilisateur
 document.body.addEventListener("click", unlockAudioContext);
 document.body.addEventListener("touchend", unlockAudioContext);
+
+// Initialiser le contexte audio
+init();
