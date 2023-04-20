@@ -38,22 +38,26 @@ function createSource() {
   gainNode.connect(audioContext.destination);
 }
 
+let isPlaying = false;
+
 function startSound(event) {
   event.preventDefault();
-  createSource();
-  gainNode.gain.value = 1;
-  source.start(0);
+  if (!isPlaying) {
+    createSource();
+    gainNode.gain.value = 1;
+    source.start(0);
+    isPlaying = true;
+  }
 }
 
 function stopSound(event) {
   event.preventDefault();
-  if (!source) {
-    console.error("Aucune source audio créée.");
-    return;
+  if (isPlaying) {
+    source.stop(0);
+    source.disconnect();
+    gainNode.disconnect();
+    isPlaying = false;
   }
-  source.stop(0);
-  source.disconnect();
-  gainNode.disconnect();
 }
 
 // Gestion des événements tactiles
