@@ -1,36 +1,9 @@
 const container = document.getElementById("container");
 const casseroleButton = document.getElementById("casseroleButton");
 const baton = document.getElementById("baton");
+const audio = new Audio("casserole-sound.wav");
 
-// Charger le son de la casserole
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-let audioBuffer;
-let source;
-let gainNode = audioContext.createGain();
-
-async function fetchAudioFile() {
-  try {
-    const response = await fetch("casserole-sound.wav");
-    const buffer = await response.arrayBuffer();
-    const decodedData = await audioContext.decodeAudioData(buffer);
-    return decodedData;
-  } catch (error) {
-    console.error("Erreur lors du chargement du fichier audio :", error);
-    return null;
-  }
-}
-
-async function init() {
-  audioBuffer = await fetchAudioFile();
-}
-
-function createSource() {
-  source = audioContext.createBufferSource();
-  source.buffer = audioBuffer;
-  source.connect(gainNode);
-  gainNode.connect(audioContext.destination);
-}
+let isPlaying = false;
 
 function animateBaton(event) {
   const rect = casseroleButton.getBoundingClientRect();
@@ -50,24 +23,19 @@ function animateBaton(event) {
       baton.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotation}deg) scaleY(1)`;
     }, 100);
 
-    playSound(event);
+    playSound();
   }
 }
 
-function playSound(event) {
-  event.preventDefault();
-
-  // Arrête la source précédente, si elle est en cours de lecture
-  if (source) {
-    source.stop(0);
-    source.disconnect();
-    gainNode.disconnect();
+function playSound() {
+  if (isPlaying) {
+    audio.pause();
+    audio.currentTime = 0;
+    isPlaying = false;
   }
 
-  // Crée une nouvelle source et démarre le son
-  createSource();
-  gainNode.gain.value = 1;
-  source.start(0);
+  audio.play();
+  isPlaying = true;
 }
 
 // Gestion des événements tactiles
@@ -78,14 +46,14 @@ casseroleButton.addEventListener("click", animateBaton);
 
 // Déverrouiller l'AudioContext sur la première interaction de l'utilisateur
 function unlockAudioContext() {
-  if (audioContext.state === "suspended") {
-    audioContext.resume().then(() => {
-      console.log("AudioContext déverrouillé");
-      document.body.removeEventListener("click", unlockAudioContext);
-      document.body.removeEventListener("touchend", unlockAudioContext);
-    });
+  if (audio.paused) {
+    audio.play();
+    audio.pause();
+    document.body.removeEventListener("click", unlockAudioContext);
+    document.body.removeEventListener("touchend", unlockAudioContext);
   }
 }
 
 // Ajouter des écouteurs d'événements pour détecter la première interaction de l'utilisateur
-document.body.addEventListener("click", unlockAudioContext)
+document.body.addEventListener("click", unlockAudioContext);
+document.body.addEventListener("touchend", unlockAudioContext);
