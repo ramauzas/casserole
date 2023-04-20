@@ -18,8 +18,8 @@ body {
 }
 
 #baton {
-  max-width: 30px;
-  max-height: 30px;
+  max-width: 150px;
+  max-height: 150px;
   position: absolute;
   top: 0;
   left: 0;
