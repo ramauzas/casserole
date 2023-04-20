@@ -92,6 +92,11 @@ function unlockAudioContext() {
 document.body.addEventListener("click", unlockAudioContext);
 document.body.addEventListener("touchend", unlockAudioContext);
 
+function fetchAudioFile(url) {
+  return fetch(url)
+    .then(response => response.arrayBuffer());
+}
+
 // Initialiser le contexte audio
 init();
 
