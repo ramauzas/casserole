@@ -34,16 +34,24 @@ function createSource() {
 
 function animateBaton(event) {
   const rect = casseroleButton.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
   const x = event.clientX || event.touches[0].clientX;
   const y = event.clientY || event.touches[0].clientY;
-  const offsetX = x - rect.left;
-  const offsetY = y - rect.top;
-  const rotation = Math.atan2(offsetY - rect.height / 2, offsetX - rect.width / 2) * 180 / Math.PI;
+  const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
 
-  baton.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotation}deg) scaleY(1.5)`;
-  setTimeout(() => {
-    baton.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotation}deg) scaleY(1)`;
-  }, 100);
+  if (distance <= rect.width / 2) {
+    const offsetX = x - rect.left;
+    const offsetY = y - rect.top;
+    const rotation = Math.atan2(offsetY - rect.height / 2, offsetX - rect.width / 2) * 180 / Math.PI;
+
+    baton.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotation}deg) scaleY(1.5)`;
+    setTimeout(() => {
+      baton.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotation}deg) scaleY(1)`;
+    }, 100);
+
+    playSound(event);
+  }
 }
 
 function playSound(event) {
