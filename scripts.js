@@ -6,6 +6,8 @@ const baton = document.getElementById("baton");
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 let audioBuffer;
+let source;
+let gainNode = audioContext.createGain();
 
 async function fetchAudioFile() {
   try {
@@ -21,6 +23,13 @@ async function fetchAudioFile() {
 
 async function init() {
   audioBuffer = await fetchAudioFile();
+}
+
+function createSource() {
+  source = audioContext.createBufferSource();
+  source.buffer = audioBuffer;
+  source.connect(gainNode);
+  gainNode.connect(audioContext.destination);
 }
 
 function animateBaton(event) {
@@ -53,6 +62,7 @@ function playSound(event) {
   gainNode.gain.value = 1;
   source.start(0);
 }
+
 
 // Gestion des événements tactiles
 casseroleButton.addEventListener("touchend", playSound);
