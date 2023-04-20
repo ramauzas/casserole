@@ -6,7 +6,7 @@ const source = audioContext.createBufferSource();
 const gainNode = audioContext.createGain();
 source.connect(gainNode);
 gainNode.connect(audioContext.destination);
-fetch("casserole-sound.wav")
+fetch("casserole_sound.wav")
   .then((response) => response.arrayBuffer())
   .then((buffer) => audioContext.decodeAudioData(buffer))
   .then((decodedData) => {
