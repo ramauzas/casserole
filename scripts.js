@@ -33,49 +33,31 @@ function createSource() {
   source = audioContext.createBufferSource();
   gainNode = audioContext.createGain();
   source.buffer = audioBuffer;
-  source.loop = true;
   source.connect(gainNode);
   gainNode.connect(audioContext.destination);
 }
 
-let isPlaying = false;
-
-
-function startSound(event) {
+function playSound(event) {
   event.preventDefault();
 
-  // Arrête et déconnecte la source et le gainNode précédents (Modifications à apporter)
-  if (isPlaying) {
+  // Arrête la source précédente, si elle est en cours de lecture
+  if (source) {
     source.stop(0);
     source.disconnect();
     gainNode.disconnect();
   }
 
-  // Crée une nouvelle source et démarre le son (Modifications à apporter)
+  // Crée une nouvelle source et démarre le son
   createSource();
   gainNode.gain.value = 1;
   source.start(0);
-  isPlaying = true;
-}
-
-
-function stopSound(event) {
-  event.preventDefault();
-  if (isPlaying) {
-    source.stop(0);
-    source.disconnect();
-    gainNode.disconnect();
-    isPlaying = false;
-  }
 }
 
 // Gestion des événements tactiles
-casseroleButton.addEventListener("touchstart", startSound);
-casseroleButton.addEventListener("touchend", stopSound);
+casseroleButton.addEventListener("touchstart", playSound);
 
 // Gestion des événements de la souris
-casseroleButton.addEventListener("mousedown", startSound);
-casseroleButton.addEventListener("mouseup", stopSound);
+casseroleButton.addEventListener("mousedown", playSound);
 
 // Initialisation
 init();
