@@ -18,9 +18,9 @@ function animateBaton(event) {
     const offsetY = y - rect.top;
     const rotation = Math.atan2(offsetY - rect.height / 2, offsetX - rect.width / 2) * 180 / Math.PI;
 
-    baton.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotation}deg) scaleY(1.5)`;
+    baton.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${-rotation}deg) scaleY(1.5)`;
     setTimeout(() => {
-      baton.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotation}deg) scaleY(1)`;
+      baton.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${-rotation}deg) scaleY(1)`;
     }, 100);
 
     playSound();
