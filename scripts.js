@@ -36,3 +36,17 @@ casseroleButton.addEventListener("click", playSound);
 
 // Initialisation
 init();
+// Déverrouiller l'AudioContext sur la première interaction de l'utilisateur
+function unlockAudioContext() {
+  if (audioContext.state === "suspended") {
+    audioContext.resume().then(() => {
+      console.log("AudioContext déverrouillé");
+      document.body.removeEventListener("click", unlockAudioContext);
+      document.body.removeEventListener("touchend", unlockAudioContext);
+    });
+  }
+}
+
+// Ajouter des écouteurs d'événements pour détecter la première interaction de l'utilisateur
+document.body.addEventListener("click", unlockAudioContext);
+document.body.addEventListener("touchend", unlockAudioContext);
