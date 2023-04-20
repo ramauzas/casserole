@@ -88,8 +88,4 @@ function unlockAudioContext() {
 }
 
 // Ajouter des écouteurs d'événements pour détecter la première interaction de l'utilisateur
-document.body.addEventListener("click", unlockAudioContext
-
-
-
-document.body.addEventListener("click", unlockAudioContext
+document.body.addEventListener("click", unlockAudioContext)
