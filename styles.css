@@ -11,6 +11,10 @@ body {
   position: relative;
   display: inline-block;
 }
+#container img {
+  max-width: 100%; /* Ajuster la taille des images en fonction de la taille du conteneur */
+  height: auto;
+}
 
 #baton {
   position: absolute;
