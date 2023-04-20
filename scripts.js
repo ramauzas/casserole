@@ -1,4 +1,5 @@
 const container = document.getElementById("container");
+const casseroleButton = document.getElementById("casseroleButton");
 
 // Charger le son de la casserole
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -56,12 +57,12 @@ function stopSound(event) {
 }
 
 // Gestion des événements tactiles
-container.addEventListener("touchstart", startSound);
-container.addEventListener("touchend", stopSound);
+casseroleButton.addEventListener("touchstart", startSound);
+casseroleButton.addEventListener("touchend", stopSound);
 
 // Gestion des événements de la souris
-container.addEventListener("mousedown", startSound);
-container.addEventListener("mouseup", stopSound);
+casseroleButton.addEventListener("mousedown", startSound);
+casseroleButton.addEventListener("mouseup", stopSound);
 
 // Initialisation
 init();
