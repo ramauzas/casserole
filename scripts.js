@@ -56,7 +56,6 @@ function animateBaton(event) {
 
 function playSound(event) {
   event.preventDefault();
-  animateBaton(event);
 
   // Arrête la source précédente, si elle est en cours de lecture
   if (source) {
@@ -71,12 +70,11 @@ function playSound(event) {
   source.start(0);
 }
 
-
 // Gestion des événements tactiles
-casseroleButton.addEventListener("touchend", playSound);
+casseroleButton.addEventListener("touchend", animateBaton);
 
 // Gestion des événements de la souris
-casseroleButton.addEventListener("click", playSound);
+casseroleButton.addEventListener("click", animateBaton);
 
 // Déverrouiller l'AudioContext sur la première interaction de l'utilisateur
 function unlockAudioContext() {
@@ -90,8 +88,8 @@ function unlockAudioContext() {
 }
 
 // Ajouter des écouteurs d'événements pour détecter la première interaction de l'utilisateur
-document.body.addEventListener("click", unlockAudioContext);
-document.body.addEventListener("touchend", unlockAudioContext);
+document.body.addEventListener("click", unlockAudioContext
 
-// Initialisation
-init();
+
+
+document.body.addEventListener("click", unlockAudioContext
