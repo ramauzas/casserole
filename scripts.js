@@ -2,21 +2,39 @@ const container = document.getElementById("container");
 
 // Charger le son de la casserole
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+async function fetchAudioFile() {
+  try {
+    const response = await fetch("casserole-sound.wav");
+    const buffer = await response.arrayBuffer();
+    const decodedData = await audioContext.decodeAudioData(buffer);
+    return decodedData;
+  } catch (error) {
+    console.error("Erreur lors du chargement du fichier audio :", error);
+    return null;
+  }
+}
+
 let source;
 let gainNode;
+let audioBuffer;
+
+async function init() {
+  audioBuffer = await fetchAudioFile();
+}
 
 function createSource() {
+  if (!audioBuffer) {
+    console.error("Le fichier audio n'est pas chargé.");
+    return;
+  }
+  
   source = audioContext.createBufferSource();
   gainNode = audioContext.createGain();
+  source.buffer = audioBuffer;
+  source.loop = true;
   source.connect(gainNode);
   gainNode.connect(audioContext.destination);
-  fetch("casserole_sound.wav")
-    .then((response) => response.arrayBuffer())
-    .then((buffer) => audioContext.decodeAudioData(buffer))
-    .then((decodedData) => {
-      source.buffer = decodedData;
-      source.loop = true;
-    });
 }
 
 function startSound(event) {
@@ -28,6 +46,10 @@ function startSound(event) {
 
 function stopSound(event) {
   event.preventDefault();
+  if (!source) {
+    console.error("Aucune source audio créée.");
+    return;
+  }
   source.stop(0);
   source.disconnect();
   gainNode.disconnect();
@@ -40,3 +62,6 @@ container.addEventListener("touchend", stopSound);
 // Gestion des événements de la souris
 container.addEventListener("mousedown", startSound);
 container.addEventListener("mouseup", stopSound);
+
+// Initialisation
+init();
