@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Casserole Sound</title>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+	<div id="container">
+		<div id="casseroleButton" class="casserole-button" style="background-image: url(casserole1.jpg);"></div>
+	</div>
+
+	<script src="scripts2.js"></script>
+</body>
+</html>
